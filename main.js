@@ -87,43 +87,71 @@ function carbonCalculations(travelMode) {
   }, 1000);
 
   /* Perform calculations */
-  const calculations = setInterval(() => {
-    // Calculate CO2 emissions: CO2 emission = distance * (metric tons CO2/mile)
-    var avgEmissions = 0.000403; // EPA's est average CO2 emissions: 4.03 x 10-4 metric tons CO2E/mile.
-    var emissions = dist * avgEmissions;
-    console.log("Emissions: " + emissions + " metric tons CO2E");
-    // Update screen for emissions (rounded to nearest hundredth)
-    var s = document.getElementById("emissions");
-    s.textContent = round(emissions, 100);
 
-    // Calculate energy used: Energy = distance / (average miles/gallon) * (gallon/kcal)
-    var avgMPG = 27.48165199729181; // From CO2 Emissions_Canada.csv
-    var convertGal = 31477.8537; // kcal 
-    var energy = dist / avgMPG * convertGal;
-    console.log("Energy: " + energy + " kcals");
-    // Update screen for energy
-    s = document.getElementById("energy");
-    s.textContent = round(energy, 100);
+  var banana = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
 
-    // Calculate banana energy: Banana energy = energy / 112
-    var banana = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
-    var bananaEnergy = energy / banana;
-    console.log("Banana Energy: " + bananaEnergy + " bananas");
-    // Update screen for banana energy
-    s = document.getElementById("banana-energy");
-    s.textContent = round(bananaEnergy, 100);
+  if (travelMode === "walk") {
+    const calculations = setInterval(() => {
+      // Emissions is 0 for walking
+      let emissions = 0.0;
+      document.getElementById("emissions").textContent = emissions;
+      
+      // Energy
+      let avgWalkSpeed = 3.5; // Harvard dataset
+      let avgKcalBurned = 133*2; // per hour
+      let energy = dist / avgWalkSpeed * avgKcalBurned;
+      document.getElementById("energy").textContent = round(energy, 100);
 
-    // Calculate req forest area: Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
-    var seq = 0.84/3600; // Metric tons CO2/acre/day
-    var reqForestArea = seq / emissions;
-    console.log("Required Forest Area: " + reqForestArea + " /acre/day");
-    // Update screen for required forest area
-    s = document.getElementById("forest-area");
-    s.textContent = round(reqForestArea, 100);
+      // Banana energy
+      let bananaEnergy = energy / banana;
+      document.getElementById("banana-energy").textContent = round(bananaEnergy, 100);
 
-    // Stop the repeat
-    clearInterval(calculations);
-  }, 1000);
+      // Trees required is 0 for walking
+      let reqForestArea = 0.0;
+      document.getElementById("forest-area").textContent = reqForestArea;
+
+      // Stop the repeat
+      clearInterval(calculations);
+    }, 1000);
+  }
+  else {
+    const calculations = setInterval(() => {
+      // Calculate CO2 emissions: CO2 emission = distance * (metric tons CO2/mile)
+      var avgEmissions = 0.000403; // EPA's est average CO2 emissions: 4.03 x 10-4 metric tons CO2E/mile.
+      var emissions = dist * avgEmissions;
+      console.log("Emissions: " + emissions + " metric tons CO2E");
+      // Update screen for emissions (rounded to nearest hundredth)
+      var s = document.getElementById("emissions");
+      s.textContent = round(emissions, 100);
+
+      // Calculate energy used: Energy = distance / (average miles/gallon) * (gallon/kcal)
+      var avgMPG = 27.48165199729181; // From CO2 Emissions_Canada.csv
+      var convertGal = 31477.8537; // kcal 
+      var energy = dist / avgMPG * convertGal;
+      console.log("Energy: " + energy + " kcals");
+      // Update screen for energy
+      s = document.getElementById("energy");
+      s.textContent = round(energy, 100);
+
+      // Calculate banana energy: Banana energy = energy / 112
+      var bananaEnergy = energy / banana;
+      console.log("Banana Energy: " + bananaEnergy + " bananas");
+      // Update screen for banana energy
+      s = document.getElementById("banana-energy");
+      s.textContent = round(bananaEnergy, 100);
+
+      // Calculate req forest area: Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
+      var seq = 0.84/3600; // Metric tons CO2/acre/day
+      var reqForestArea = seq / emissions;
+      console.log("Required Forest Area: " + reqForestArea + " /acre/day");
+      // Update screen for required forest area
+      s = document.getElementById("forest-area");
+      s.textContent = round(reqForestArea, 100);
+
+      // Stop the repeat
+      clearInterval(calculations);
+    }, 1000);
+  }
 
   // Resize the map view
   // const fitToMarkers = setInterval(() => {
