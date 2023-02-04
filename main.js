@@ -90,7 +90,7 @@ function carbonCalculations(travelMode) {
 
   var banana = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
 
-  if (travelMode === "walk") {
+  if (travelMode === "walk" || travelMode === "cycle") {
     const calculations = setInterval(() => {
       // Emissions is 0 for walking
       let emissions = 0.0;
@@ -109,6 +109,31 @@ function carbonCalculations(travelMode) {
       // Trees required is 0 for walking
       let reqForestArea = 0.0;
       document.getElementById("forest-area").textContent = reqForestArea;
+
+      // Stop the repeat
+      clearInterval(calculations);
+    }, 1000);
+  } else if(travelMode === "pubTrans") {
+    const calculations = setInterval(() => {
+      // Emissions
+      var avgEmissions = 0.39 * 0.000453592;
+      let emissions = dist * avgEmissions;
+      document.getElementById("emissions").textContent = round(emissions, 100);
+
+      // Energy
+      let avgMPG = 26.4;
+      let convertGal = 31477.8537;
+      let energy = dist / avgMPG * convertGal;
+      document.getElementById("energy").textContent = round(energy, 100);
+
+      // Banana energy
+      let bananaEnergy = energy / banana;
+      document.getElementById("banana-energy").textContent = round(bananaEnergy, 100);
+
+      // Req forest
+      let seq = 0.84/3600; // Metric tons CO2/acre/day
+      let reqForestArea = seq / emissions;
+      document.getElementById("forest-area").textContent = round(reqForestArea, 100);
 
       // Stop the repeat
       clearInterval(calculations);
