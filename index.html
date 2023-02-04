@@ -12,6 +12,8 @@
     <header>
       <nav>
         <ul>
+          <img src="logo_white.png" alt="logo!" class="navbar-logo">
+          <div class="navbar-title">BANANA<br>MAP</div>
           <li><a class="navbar-active" href="#home">Navigation</a></li>
           <li><a href="#contact">Energy Saved</a></li>
           <li><a href="#news">Go Green</a></li>
@@ -31,13 +33,14 @@
       <div id="control-panel">
         <!-- Origin input -->
         <div class="input-group">
-          <label>Origin</label>
+          <label>Origin</label><img src="blue_locator.png" alt="blue" class="control-panel-locators">
           <input type="text" id="origin-input" />
         </div>
 
         <!-- Destination input -->
         <div class="input-group">
             <label>Destination</label>
+            <img src="red_locator.png" alt="red" class="control-panel-locators">
             <input type="text" id="destination-input" />
         </div>
 
@@ -49,12 +52,12 @@
           <button type="submit" class="route-button" onclick="carbonCalculations('cycle')">Riding</button>
         </div>
       </div>
-      <div id="info-box">
-        Distance: <span type="text" id="distance">0</span> miles. CO2 Emissions: <span type="text" id="emissions">0</span> metric tons of CO2. Energy: <span type="text" id="energy">0</span> kcal. This is equal to: <span type="text" id="banana-energy">0</span> bananas. US forest area needed to absorb the CO2 emitted: <span type="text" id="forest-area">0</span> acres per day.
-      </div>
     </main>
-
+    
     <footer>
+      <div id="info-box">
+        Distance: <span type="text" id="distance">0</span> miles. CO2 Emissions: <span type="text" id="emissions">0</span> metric tons of CO2. Energy: <span type="text" id="energy">0</span> kcal. This is equal to: <span type="text" id="banana-energy">0</span> bananas. <br>US forest area needed to absorb the CO2 emitted: <span type="text" id="forest-area">0</span> acres per day.
+      </div>
       <!-- MapBox GL Scripts -->
       <script src='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js'></script>
       <!-- Our scripts -->
