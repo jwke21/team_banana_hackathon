@@ -44,27 +44,60 @@ main {
   background-color: rgb(41, 131, 59);
 }
 
+.navbar-logo {
+  background: url("/path") no-repeat; 
+  width: 70px; 
+  height: 60px; 
+  display: block; 
+  margin-right: 15px;
+  text-indent: -9999px;
+}
+
+.navbar-title {
+  width: 100px; 
+  height: 50px; 
+  display: block; 
+  margin-right: 50px;
+  color: rgb(221, 228, 69);
+  font-size: 24px;
+  font-weight:bold;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
 .control-panel-buttons {
   text-align: center;
 }
+
+
 
 /* Styling for the origin and destination inputs */
 .input-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .input-group label {
   font-weight: bold;
-  margin-bottom: 10px;
+  color:#4caf5c;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 3px;
 }
 
 .input-group input[type="text"] {
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+.control-panel-locators {
+  display:inherit;
+  width: 16px;
+  height: 20px;
+  position: flex;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 /* Styling for the route button */
@@ -76,7 +109,7 @@ main {
   border-top: 5px;
   border: snow;
   font-size: 14px;
-  margin-top:15px;
+  margin-top:10px;
   margin-bottom: 10px;
   position: relative;
   width: 250px;
