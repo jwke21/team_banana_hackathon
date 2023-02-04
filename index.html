@@ -49,14 +49,20 @@
           <button type="submit" class="route-button" onclick="carbonCalculations('pubTrans')">Public Transit</button>
           <button type="submit" class="route-button" onclick="carbonCalculations('drive')">Driving</button>
           <button type="submit" class="route-button" onclick="carbonCalculations('walk')">Walking</button>
-          <button type="submit" class="route-button" onclick="carbonCalculations('cycle')">Riding</button>
+          <button type="submit" class="route-button" onclick="carbonCalculations('cycle')">Cycling</button>
         </div>
       </div>
     </main>
     
     <footer>
       <div id="info-box">
-        Distance: <span type="text" id="distance">0</span> miles. CO2 Emissions: <span type="text" id="emissions">0</span> metric tons of CO2. Energy: <span type="text" id="energy">0</span> kcal. This is equal to: <span type="text" id="banana-energy">0</span> bananas. <br>US forest area needed to absorb the CO2 emitted: <span type="text" id="forest-area">0</span> acres per day.
+        Distance: <span type="text" id="distance" style="color: yellow; font-weight:bolder">0</span> miles. 
+        &nbsp&nbspCO2 Emissions: <span type="text" id="emissions" 
+        style="color: yellow; font-weight:bolder">0</span> metric tons of CO2. 
+        <br>Energy: <span type="text" id="energy" style="color: yellow; font-weight:bolder">0</span> kcal. &nbsp&nbsp
+        This is equal to: <span type="text" id="banana-energy" style="color: yellow; font-weight:bolder">
+          0</span > bananas. <br>US forest area needed to absorb the CO2 emitted: 
+          <span type="text" id="forest-area" style="color: yellow; font-weight:bolder">0</span> acres per day.
       </div>
       <!-- MapBox GL Scripts -->
       <script src='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js'></script>

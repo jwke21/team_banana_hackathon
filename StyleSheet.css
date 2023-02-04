@@ -116,6 +116,11 @@ main {
   cursor: pointer;
 }
 
+.footer-numbers {
+  color: yellow; 
+  font-weight:bolder"
+}
+
 /**************************ID SELECTORS**************************/
 
 /* Styling for the route segment header */
@@ -150,7 +155,7 @@ main {
   padding: 10px 10px 0px 10px;
   bottom: 10px;
   width: 100%;
-  height: 50px;
+  height: 75px;
   background-color: rgb(61, 153, 95);
   color:white;
   font-size: 16px;
