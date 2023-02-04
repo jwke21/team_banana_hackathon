@@ -70,12 +70,6 @@ function carbonCalculations(travelMode) {
     toLoc = new mapboxgl.LngLat(destLong, destLat);
   });
 
-  // Resize the map view
-  var bounds = [originCoordinates, destCoordinates].reduce(function(bounds, coord) {
-    return bounds.extend(coord);
-  }, new mapboxgl.LngLatBounds(originCoordinates, destCoordinates));
-  map.fit(bounds);
-
   /* Get dist */
   var dist;
   const getDist = setInterval(() => {
@@ -90,7 +84,7 @@ function carbonCalculations(travelMode) {
 
     // Stop the repeat
     clearInterval(getDist);
-  }, 500);
+  }, 1000);
 
   /* Perform calculations */
   const calculations = setInterval(() => {
@@ -129,7 +123,19 @@ function carbonCalculations(travelMode) {
 
     // Stop the repeat
     clearInterval(calculations);
-  }, 500);
+  }, 1000);
+
+  // Resize the map view
+  // const fitToMarkers = setInterval(() => {
+  //   var bounds = new mapboxgl.LngLatBounds();
+  //   markers.features.forEach(function(feature) {
+  //     bounds.extend(feature.geometry.coordinates);
+  //   });
+  //   map.fitBounds(bounds);
+
+  //   // Stop the repeat
+  //   clearInterval(fitToMarkers);
+  // }, 500);
 }
 
 function round(number, decimalPlace) {
