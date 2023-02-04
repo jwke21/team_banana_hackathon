@@ -43,22 +43,22 @@
 
         <!-- Transportation mode buttons -->
         <div class="control-panel-buttons">
-          <button type="submit" class="route-button" onclick="carbonCalculations()">Public Transit</button>
-          <button type="submit" class="route-button">Driving</button>
-          <button type="submit" class="route-button">Walking</button>
-          <button type="submit" class="route-button">Riding</button>
+          <button type="submit" class="route-button" onclick="carbonCalculations('pubTrans')">Public Transit</button>
+          <button type="submit" class="route-button" onclick="carbonCalculations('drive')">Driving</button>
+          <button type="submit" class="route-button" onclick="carbonCalculations('walk')">Walking</button>
+          <button type="submit" class="route-button" onclick="carbonCalculations('cycle')">Riding</button>
         </div>
       </div>
-      <div id="info-box">You will save energy: xxx. <span>This equals to xxxxxxxxxxx</span></div>
+      <div id="info-box">
+        Distance: <span type="text" id="distance">0</span> miles. CO2 Emissions: <span type="text" id="emissions">0</span> metric tons of CO2. Energy: <span type="text" id="energy">0</span> kcal. This is equal to: <span type="text" id="banana-energy">0</span> bananas. US forest area needed to absorb the CO2 emitted: <span type="text" id="forest-area">0</span> acres per day.
+      </div>
     </main>
 
     <footer>
-      
+      <!-- MapBox GL Scripts -->
+      <script src='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js'></script>
+      <!-- Our scripts -->
+      <script src="main.js"></script>
     </footer>
-    
-    <!-- MapBox GL Scripts -->
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js'></script>
-
-    <!-- User scripts -->
-    <script src="main.js"></script>
+  
   </body>

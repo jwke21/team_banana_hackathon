@@ -21,13 +21,13 @@ const map = new mapboxgl.Map({
 // Map markers
 var currentMarkers = []
 
-function carbonCalculations() {
+function carbonCalculations(travelMode) {
   var originLat;
   var originLong;
   var destLat;
   var destLong;
 
-  // Clear markers
+  // Clear prev markers
   for (var i = currentMarkers.length - 1; i >= 0; i--) {
     currentMarkers[i].remove();
   }
@@ -40,6 +40,7 @@ function carbonCalculations() {
   var fromLoc;
   var toLoc;
 
+  // Add origin marker to map
   originCoordinates.then((res) => {
     originLat = res[1];
     originLong = res[0];
@@ -53,6 +54,7 @@ function carbonCalculations() {
     fromLoc = new mapboxgl.LngLat(originLong, originLat);
   });
 
+  // Add destination marker to map
   destCoordinates.then((res) => {
     destLat = res[1];
     destLong = res[0];
@@ -68,17 +70,71 @@ function carbonCalculations() {
     toLoc = new mapboxgl.LngLat(destLong, destLat);
   });
 
+  // Resize the map view
+  var bounds = [originCoordinates, destCoordinates].reduce(function(bounds, coord) {
+    return bounds.extend(coord);
+  }, new mapboxgl.LngLatBounds(originCoordinates, destCoordinates));
+  map.fit(bounds);
+
   /* Get dist */
   var dist;
   const getDist = setInterval(() => {
     dist = fromLoc.distanceTo(toLoc);
-  }, 1000);
+    // Convert from meters to miles
+    dist *= 0.000621371; // 1 meter = ~0.000621371 miles
+    // Round to nearest hundredth
+    console.log("Distance: " + dist + " miles");
+    // Update screen for miles (rounded to nearest hundredth)
+    var s = document.getElementById("distance");
+    s.textContent = round(dist, 100);
+
+    // Stop the repeat
+    clearInterval(getDist);
+  }, 500);
 
   /* Perform calculations */
-  
+  const calculations = setInterval(() => {
+    // Calculate CO2 emissions: CO2 emission = distance * (metric tons CO2/mile)
+    var avgEmissions = 0.000403; // EPA's est average CO2 emissions: 4.03 x 10-4 metric tons CO2E/mile.
+    var emissions = dist * avgEmissions;
+    console.log("Emissions: " + emissions + " metric tons CO2E");
+    // Update screen for emissions (rounded to nearest hundredth)
+    var s = document.getElementById("emissions");
+    s.textContent = round(emissions, 100);
+
+    // Calculate energy used: Energy = distance / (average miles/gallon) * (gallon/kcal)
+    var avgMPG = 27.48165199729181; // From CO2 Emissions_Canada.csv
+    var convertGal = 31477.8537; // kcal 
+    var energy = dist / avgMPG * convertGal;
+    console.log("Energy: " + energy + " kcals");
+    // Update screen for energy
+    s = document.getElementById("energy");
+    s.textContent = round(energy, 100);
+
+    // Calculate banana energy: Banana energy = energy / 112
+    var banana = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
+    var bananaEnergy = energy / banana;
+    console.log("Banana Energy: " + bananaEnergy + " bananas");
+    // Update screen for banana energy
+    s = document.getElementById("banana-energy");
+    s.textContent = round(bananaEnergy, 100);
+
+    // Calculate req forest area: Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
+    var seq = 0.84/3600; // Metric tons CO2/acre/day
+    var reqForestArea = seq / emissions;
+    console.log("Required Forest Area: " + reqForestArea + " /acre/day");
+    // Update screen for required forest area
+    s = document.getElementById("forest-area");
+    s.textContent = round(reqForestArea, 100);
+
+    // Stop the repeat
+    clearInterval(calculations);
+  }, 500);
 }
 
-
+function round(number, decimalPlace) {
+  return Math.ceil(number * decimalPlace) / decimalPlace;
+}
 
 // Converts the given address string into coordinates (lattitude and longitude)
 async function convertAddressToCoordinates(elemId) {
