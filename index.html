@@ -5,14 +5,14 @@
     <!-- MapBox GL Styles -->
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css' rel='stylesheet' />
     <!-- Zhiwei's stylesheet -->
-    <link rel="stylesheet" href="StyleSheet.css"/>
+    <link rel="stylesheet" href="stylesheet.css"/>
   </head>
 
   <body>
     <header>
       <nav>
         <ul>
-          <img src="logo_white.png" alt="logo!" class="navbar-logo">
+          <img src="resources/logo_white.png" alt="logo!" class="navbar-logo">
           <div class="navbar-title">BANANA<br>MAP</div>
           <li><a class="navbar-active" href="#home">Navigation</a></li>
           <li><a href="#contact">Energy Saved</a></li>
@@ -33,23 +33,23 @@
       <div id="control-panel">
         <!-- Origin input -->
         <div class="input-group">
-          <label>Origin</label><img src="blue_locator.png" alt="blue" class="control-panel-locators">
+          <label>Origin</label><img src="resources/blue_locator.png" alt="blue" class="control-panel-locators">
           <input type="text" id="origin-input" />
         </div>
 
         <!-- Destination input -->
         <div class="input-group">
             <label>Destination</label>
-            <img src="red_locator.png" alt="red" class="control-panel-locators">
+            <img src="resources/red_locator.png" alt="red" class="control-panel-locators">
             <input type="text" id="destination-input" />
         </div>
 
         <!-- Transportation mode buttons -->
         <div class="control-panel-buttons">
-          <button type="submit" class="route-button" onclick="carbonCalculations('pubTrans')">Public Transit</button>
-          <button type="submit" class="route-button" onclick="carbonCalculations('drive')">Driving</button>
-          <button type="submit" class="route-button" onclick="carbonCalculations('walk')">Walking</button>
-          <button type="submit" class="route-button" onclick="carbonCalculations('cycle')">Cycling</button>
+          <button type="submit" class="route-button" onclick="getBananaMetrics('pubTrans')">Public Transit</button>
+          <button type="submit" class="route-button" onclick="getBananaMetrics('drive')">Driving</button>
+          <button type="submit" class="route-button" onclick="getBananaMetrics('walk')">Walking</button>
+          <button type="submit" class="route-button" onclick="getBananaMetrics('cycle')">Cycling</button>
         </div>
       </div>
     </main>
