@@ -12,7 +12,7 @@ const map = new mapboxgl.Map({
 let currentMarkers = []
 
 function getBananaMetrics(travelMode) {
-  // Clear prev markers
+  // Clear prev markers if necessary
   for (var i = currentMarkers.length - 1; i >= 0; i--) {
     currentMarkers[i].remove();
   }
@@ -74,17 +74,7 @@ function getBananaMetrics(travelMode) {
       console.error(err);
     })
 
-  // Resize the map view
-  // const fitToMarkers = setInterval(() => {
-  //   var bounds = new mapboxgl.LngLatBounds();
-  //   markers.features.forEach(function(feature) {
-  //     bounds.extend(feature.geometry.coordinates);
-  //   });
-  //   map.fitBounds(bounds);
-
-  //   // Stop the repeat
-  //   clearInterval(fitToMarkers);
-  // }, 500);
+  // TODO: Resize the map view
 }
 
 
@@ -142,44 +132,28 @@ function calculateAndUpdateMetrics(travelMode, dist) {
   let emissions; // CO2 emission = distance * (metric tons CO2/mile)
   let energy;
   let bananaEnergy; // Banana energy = energy / 112
-  let reqForestArea; // Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
+  let reqForestArea; // Required forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
 
   if (travelMode === "pubTrans") {
-    // Emissions = distance * (bus metric tons CO2 / mile)
-    emissions = dist * avgBusEmissions;
-    // Energy
-    energy = dist / avgBusMPG * galToKcalConversion; // kcal energy it took for the travel for all passengers
-    // Banana energy
+    emissions = dist * avgBusEmissions; // Emissions = distance * (bus metric tons CO2 / mile)
+    energy = dist / avgBusMPG * galToKcalConversion; // Kcal energy it took for the travel for all passengers
     bananaEnergy = energy / bananaConversion;
-    // Required forest area
     reqForestArea = seqForest / emissions;
   } else if (travelMode === "drive") {
-    // Emissions = distance * (car metric tons C02 / mile)
-    emissions = dist * avgCarEmissions;
-    // Energy = distance / (average miles/gallon) * (gallon/kcal)
-    energy = dist / avgCarMPG * galToKcalConversion;
-    // Banana energy
+    emissions = dist * avgCarEmissions; // Emissions = distance * (car metric tons C02 / mile)
+    energy = dist / avgCarMPG * galToKcalConversion; // Energy = distance / (average miles/gallon) * (gallon/kcal)
     bananaEnergy = energy / bananaConversion;
-    // Required forest area
     reqForestArea = seqForest / emissions;
   } else if (travelMode === "walk") {
-    // Emissions is 0 for walking
-    emissions = 0.0;
-    // Energy
+    emissions = 0.0; // Emissions is 0 for walking
     energy = dist / avgWalkMPH * avgWalkKcalBurned;
-    // Banana energy
     bananaEnergy = energy / bananaConversion;
-    // Required forest area is 0 for walking
-    reqForestArea = 0.0;
+    reqForestArea = 0.0; // Required forest area is 0 for walking
   } else {
-    // Emissions is 0 for cycling
-    emissions = 0.0;
-    // Energy
+    emissions = 0.0; // Emissions is 0 for cycling
     energy = dist / avgBikeMPH * avgCycleKcalBurned;
-    // Banana energy
     bananaEnergy = energy / bananaConversion;
-    // Required forest area is 0 for cycling
-    reqForestArea = 0.0;
+    reqForestArea = 0.0; // Required forest area is 0 for cycling
   }
 
   // Update screen with metrics
