@@ -1,5 +1,10 @@
+# VSCode config stuff
 .vscode/
+
+# Python venv stuff
 .venv/
+
+# Node stuff
 node_modules/
 package.json
 package-lock.json
