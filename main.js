@@ -1,182 +1,78 @@
-// function distance_to_emissions(dist_miles) {
-//     const mean = 403.27698344; // (Grams per Mile)
-//     return dist_miles * mean;
-// }
+MAPBOX_ACCESS_TOKEN = "pk.eyJ1Ijoid2FrZTIxIiwiYSI6ImNsZHBxNmE5NDAza24zdm1zMmp3b3BlejYifQ.2zh68FrGfBHSDnuhtpk1Ig";
 
-// function distance_to_calories(dist_miles) {
-//     const mean = 0.6168538717; // Calories per 
-//     return dist_miles * mean;
-// }
-
-MAPBOX_ACCESS_TOKEN = "?access_token=pk.eyJ1Ijoid2FrZTIxIiwiYSI6ImNsZHBxNmE5NDAza24zdm1zMmp3b3BlejYifQ.2zh68FrGfBHSDnuhtpk1Ig";
-
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2FrZTIxIiwiYSI6ImNsZHBxNmE5NDAza24zdm1zMmp3b3BlejYifQ.2zh68FrGfBHSDnuhtpk1Ig';
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 const map = new mapboxgl.Map({
-  container: 'map', // container ID
-  style: 'mapbox://styles/mapbox/streets-v12', // style URL
+  container: "map", // container ID
+  style: "mapbox://styles/mapbox/streets-v12", // style URL
   center: [-122.337410, 47.620630], // starting position [lng, lat]
   zoom: 12, // starting zoom
 });
 
 // Map markers
-var currentMarkers = []
+let currentMarkers = []
 
-function carbonCalculations(travelMode) {
-  var originLat;
-  var originLong;
-  var destLat;
-  var destLong;
-
+function getBananaMetrics(travelMode) {
   // Clear prev markers
   for (var i = currentMarkers.length - 1; i >= 0; i--) {
     currentMarkers[i].remove();
   }
 
-  // Get Origin loc
-  var originCoordinates = convertAddressToCoordinates("origin-input");
-  // Get Dest loc
-  var destCoordinates = convertAddressToCoordinates("destination-input");
+  // Get Origin and destination coordinates
+  let originCoordinates = convertAddressToCoordinates("origin-input");
+  let destCoordinates = convertAddressToCoordinates("destination-input");
 
-  var fromLoc;
-  var toLoc;
+  let fromLoc, toLoc;
+  let dist;
+  let originLong, originLat;
+  let destLong, destLat;
 
-  // Add origin marker to map
-  originCoordinates.then((res) => {
-    originLat = res[1];
-    originLong = res[0];
-    console.log("Origin: " + originLat + "," + originLong);
-    // Add marker to map
-    const marker = new mapboxgl.Marker()
-      .setLngLat([originLong, originLat])
-      .addTo(map);
-    currentMarkers.push(marker);
-    // Set from location
-    fromLoc = new mapboxgl.LngLat(originLong, originLat);
-  });
-
-  // Add destination marker to map
-  destCoordinates.then((res) => {
-    destLat = res[1];
-    destLong = res[0];
-    console.log("Dest: " + destLat + "," + destLong);
-    // Add marker to map
-    const marker = new mapboxgl.Marker({
-      color: "#FF0000" // Red
+  /* Add origin marker to map */
+  originCoordinates
+    .then((res) => {
+      originLong = res[0];
+      originLat = res[1];
+      console.log("Origin: " + originLat + "," + originLong);
+      // Add marker to map
+      const marker = new mapboxgl.Marker()
+        .setLngLat([originLong, originLat])
+        .addTo(map);
+      currentMarkers.push(marker);
+      // Set from location
+      fromLoc = new mapboxgl.LngLat(originLong, originLat);
     })
-      .setLngLat([destLong, destLat])
-      .addTo(map);
-    currentMarkers.push(marker);
-    // Set to location
-    toLoc = new mapboxgl.LngLat(destLong, destLat);
-  });
-
-  /* Get dist */
-  var dist;
-  const getDist = setInterval(() => {
-    dist = fromLoc.distanceTo(toLoc);
-    // Convert from meters to miles
-    dist *= 0.000621371; // 1 meter = ~0.000621371 miles
-    // Round to nearest hundredth
-    console.log("Distance: " + dist + " miles");
-    // Update screen for miles (rounded to nearest hundredth)
-    var s = document.getElementById("distance");
-    s.textContent = round(dist, 100);
-
-    // Stop the repeat
-    clearInterval(getDist);
-  }, 1000);
-
-  /* Perform calculations */
-
-  var banana = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
-
-  if (travelMode === "walk" || travelMode === "cycle") {
-    const calculations = setInterval(() => {
-      // Emissions is 0 for walking
-      let emissions = 0.0;
-      document.getElementById("emissions").textContent = emissions;
-      
-      // Energy
-      let avgWalkSpeed = 3.5; // Harvard dataset
-      let avgKcalBurned = 133*2; // per hour
-      let energy = dist / avgWalkSpeed * avgKcalBurned;
-      document.getElementById("energy").textContent = round(energy, 100);
-
-      // Banana energy
-      let bananaEnergy = energy / banana;
-      document.getElementById("banana-energy").textContent = round(bananaEnergy, 100);
-
-      // Trees required is 0 for walking
-      let reqForestArea = 0.0;
-      document.getElementById("forest-area").textContent = reqForestArea;
-
-      // Stop the repeat
-      clearInterval(calculations);
-    }, 1000);
-  } else if(travelMode === "pubTrans") {
-    const calculations = setInterval(() => {
-      // Emissions
-      var avgEmissions = 0.39 * 0.000453592;
-      let emissions = dist * avgEmissions;
-      document.getElementById("emissions").textContent = round(emissions, 100);
-
-      // Energy
-      let avgMPG = 26.4;
-      let convertGal = 31477.8537;
-      let energy = dist / avgMPG * convertGal;
-      document.getElementById("energy").textContent = round(energy, 100);
-
-      // Banana energy
-      let bananaEnergy = energy / banana;
-      document.getElementById("banana-energy").textContent = round(bananaEnergy, 100);
-
-      // Req forest
-      let seq = 0.84/3600; // Metric tons CO2/acre/day
-      let reqForestArea = seq / emissions;
-      document.getElementById("forest-area").textContent = round(reqForestArea, 100);
-
-      // Stop the repeat
-      clearInterval(calculations);
-    }, 1000);
-  }
-  else {
-    const calculations = setInterval(() => {
-      // Calculate CO2 emissions: CO2 emission = distance * (metric tons CO2/mile)
-      var avgEmissions = 0.000403; // EPA's est average CO2 emissions: 4.03 x 10-4 metric tons CO2E/mile.
-      var emissions = dist * avgEmissions;
-      console.log("Emissions: " + emissions + " metric tons CO2E");
-      // Update screen for emissions (rounded to nearest hundredth)
-      var s = document.getElementById("emissions");
-      s.textContent = round(emissions, 100);
-
-      // Calculate energy used: Energy = distance / (average miles/gallon) * (gallon/kcal)
-      var avgMPG = 27.48165199729181; // From CO2 Emissions_Canada.csv
-      var convertGal = 31477.8537; // kcal 
-      var energy = dist / avgMPG * convertGal;
-      console.log("Energy: " + energy + " kcals");
-      // Update screen for energy
-      s = document.getElementById("energy");
-      s.textContent = round(energy, 100);
-
-      // Calculate banana energy: Banana energy = energy / 112
-      var bananaEnergy = energy / banana;
-      console.log("Banana Energy: " + bananaEnergy + " bananas");
-      // Update screen for banana energy
-      s = document.getElementById("banana-energy");
-      s.textContent = round(bananaEnergy, 100);
-
-      // Calculate req forest area: Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
-      var seq = 0.84/3600; // Metric tons CO2/acre/day
-      var reqForestArea = seq / emissions;
-      console.log("Required Forest Area: " + reqForestArea + " /acre/day");
-      // Update screen for required forest area
-      s = document.getElementById("forest-area");
-      s.textContent = round(reqForestArea, 100);
-
-      // Stop the repeat
-      clearInterval(calculations);
-    }, 1000);
-  }
+    /* Add destination marker to map */
+    .then(() => {
+      destCoordinates
+        .then((res) => {
+          destLong = res[0];
+          destLat = res[1];
+          console.log("Dest: " + destLat + "," + destLong);
+          // Add marker to map
+          const marker = new mapboxgl.Marker({
+            color: "#FF0000" // Red
+          })
+            .setLngLat([destLong, destLat])
+            .addTo(map);
+          currentMarkers.push(marker);
+          // Set to location
+          toLoc = new mapboxgl.LngLat(destLong, destLat);
+        })
+      /* Get distance between points */
+      .then(() => {
+        dist = getDistanceBetweenCoordinates(fromLoc, toLoc);
+        console.log("Distance: " + dist + " miles");
+        // Update screen for distance traveled (rounded to nearest hundredth)
+        document.getElementById("distance").textContent = round(dist, 100);
+      })
+      /* Perform calculations */
+      .then(() => {
+        calculateAndUpdateMetrics(travelMode, dist);
+      })
+    })
+    /* Catch and report potential error */
+    .catch(err => {
+      console.error(err);
+    })
 
   // Resize the map view
   // const fitToMarkers = setInterval(() => {
@@ -191,9 +87,19 @@ function carbonCalculations(travelMode) {
   // }, 500);
 }
 
+
+function getDistanceBetweenCoordinates(fromLoc, toLoc) {
+  const milesConversion = 0.000621371; // 1 meter = ~0.000621371 miles
+  var metersTraveled = fromLoc.distanceTo(toLoc);
+  // Return distance traveled converted to miles
+  return metersTraveled * milesConversion;
+}
+
+
 function round(number, decimalPlace) {
   return Math.ceil(number * decimalPlace) / decimalPlace;
 }
+
 
 // Converts the given address string into coordinates (lattitude and longitude)
 async function convertAddressToCoordinates(elemId) {
@@ -206,7 +112,7 @@ async function convertAddressToCoordinates(elemId) {
   // Correctly format the address string for API
   addrString = addrString.trim();
   addrString = addrString.replaceAll(" ", "%20");
-  url = GEOCODING_API_GET_URL + addrString + ".json" + MAPBOX_ACCESS_TOKEN;
+  url = GEOCODING_API_GET_URL + addrString + ".json?access_token=" + MAPBOX_ACCESS_TOKEN;
 
   try {
     // Make API call
@@ -219,3 +125,70 @@ async function convertAddressToCoordinates(elemId) {
   }
 }
 
+
+const bananaConversion = 89 * (126/100); // 1 Banana (126g avg) = 112.14 kcal or Calories (large calorie)
+const seqForest = 0.84/3600; // Metric tons CO2/acre/day
+const galToKcalConversion = 31477.8537;
+const avgBusEmissions = 0.39 * 0.000453592; // Convert lbs/mile to metric tons CO2/mile
+const avgCarEmissions = 0.000403; // EPA's est average CO2 emissions: 4.03 x 10-4 metric tons CO2E/mile.
+const avgBusMPG = 26.4; // passanger-mpg, national average for US transit bus
+const avgCarMPG = 27.48165199729181; // From CO2 Emissions_Canada.csv
+const avgWalkMPH = 3.5; // https://www.health.harvard.edu/diet-and-weight-loss/calories-burned-in-30-minutes-for-people-of-three-different-weights
+const avgWalkKcalBurned = 133*2; // (avg Kcal/30mins) * 2 = avg Kcal per hour
+const avgBikeMPH = 12; // https://www.health.harvard.edu/diet-and-weight-loss/calories-burned-in-30-minutes-for-people-of-three-different-weights
+const avgCycleKcalBurned = 288*2; // (avg Kcal/30mins) * 2 = avg Kcal per hour
+
+function calculateAndUpdateMetrics(travelMode, dist) {
+  let emissions; // CO2 emission = distance * (metric tons CO2/mile)
+  let energy;
+  let bananaEnergy; // Banana energy = energy / 112
+  let reqForestArea; // Forest area = (metric ton CO2 sequestered/acre/day) / CO2 emission
+
+  if (travelMode === "pubTrans") {
+    // Emissions = distance * (bus metric tons CO2 / mile)
+    emissions = dist * avgBusEmissions;
+    // Energy
+    energy = dist / avgBusMPG * galToKcalConversion; // kcal energy it took for the travel for all passengers
+    // Banana energy
+    bananaEnergy = energy / bananaConversion;
+    // Required forest area
+    reqForestArea = seqForest / emissions;
+  } else if (travelMode === "drive") {
+    // Emissions = distance * (car metric tons C02 / mile)
+    emissions = dist * avgCarEmissions;
+    // Energy = distance / (average miles/gallon) * (gallon/kcal)
+    energy = dist / avgCarMPG * galToKcalConversion;
+    // Banana energy
+    bananaEnergy = energy / bananaConversion;
+    // Required forest area
+    reqForestArea = seqForest / emissions;
+  } else if (travelMode === "walk") {
+    // Emissions is 0 for walking
+    emissions = 0.0;
+    // Energy
+    energy = dist / avgWalkMPH * avgWalkKcalBurned;
+    // Banana energy
+    bananaEnergy = energy / bananaConversion;
+    // Required forest area is 0 for walking
+    reqForestArea = 0.0;
+  } else {
+    // Emissions is 0 for cycling
+    emissions = 0.0;
+    // Energy
+    energy = dist / avgBikeMPH * avgCycleKcalBurned;
+    // Banana energy
+    bananaEnergy = energy / bananaConversion;
+    // Required forest area is 0 for cycling
+    reqForestArea = 0.0;
+  }
+
+  // Update screen with metrics
+  document.getElementById("emissions").textContent = round(emissions, 100);
+  document.getElementById("energy").textContent = round(energy, 100);
+  document.getElementById("banana-energy").textContent = round(bananaEnergy, 100);
+  document.getElementById("forest-area").textContent = round(reqForestArea, 100);
+  console.log("Emissions: " + emissions + " metric tons CO2E");
+  console.log("Energy: " + energy + " kcals");
+  console.log("Banana Energy: " + bananaEnergy + " bananas");
+  console.log("Required Forest Area: " + reqForestArea + " acres per day");
+}
