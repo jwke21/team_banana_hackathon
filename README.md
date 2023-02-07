@@ -27,6 +27,6 @@ the Geofetch API)
 5) Copy the newly created Token and assign it to the
 `MAPBOX_ACCESS_TOKEN = "<Place_Your_MapBox_Access_Token_Here>";` on line 1 of `main.js`.
 
-6) Save and open or refresh `index.html` and it should work.
+6) Save `main.js` and open or refresh `index.html` and it should work.
 
 7) Go bananas 🍌! ;)
